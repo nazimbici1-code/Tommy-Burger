@@ -1,10 +1,9 @@
 {
-  "$schema": "https://railway.app/standard-schema.json",
   "build": {
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "java -cp target/classes:target/dependency/* FastFood.ApiServer",
+    "startCommand": "java -jar target/FastFood1-0.0.1-SNAPSHOT.jar",
     "restartPolicyType": "ON_FAILURE"
   }
 }
