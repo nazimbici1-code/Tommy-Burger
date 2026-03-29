@@ -293,7 +293,90 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    } 
+    // === CORRECTION ERREUR : getMenu() ===
+public static List<MenuItem> getMenu() {
+    List<MenuItem> menu = new ArrayList<>();
+    String sql = """
+        SELECT p.id, p.nom, p.prix, p.image_path, c.nom AS categorie
+        FROM produits p
+        JOIN categories c ON p.categorie_id = c.id
+        ORDER BY c.ordre ASC, p.ordre ASC
+    """;
+    try (Connection conn = connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+            menu.add(new MenuItem(
+                rs.getInt("id"), 
+                rs.getString("nom"), 
+                rs.getDouble("prix"), 
+                rs.getString("categorie"), 
+                rs.getString("image_path")
+            ));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return menu;
+}
+
+// === CORRECTION ERREUR : addProduit avec 3 arguments ===
+// Cette surcharge permet à l'API de fonctionner sans envoyer l'ID catégorie (utilise "Divers" par défaut)
+public static boolean addProduit(String nom, double prix, String imagePath) {
+    // On cherche une catégorie par défaut ou on utilise la première disponible
+    int defaultCatId = 1; 
+    addProduit(nom, prix, imagePath, defaultCatId);
+    return true;
+}
+
+// === CORRECTION ERREUR : deleteProduit(int) ===
+public static boolean deleteProduit(int id) {
+    String sql = "DELETE FROM produits WHERE id = ?";
+    try (Connection conn = connect(); PreparedStatement p = conn.prepareStatement(sql)) {
+        p.setInt(1, id);
+        int rows = p.executeUpdate();
+        logAction("system", "delete_produit", "ID: " + id);
+        return rows > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+// === CORRECTION ERREUR : getNombreCommandesPeriode(String) ===
+public static int getNombreCommandesPeriode(String periode) {
+    String query = switch (periode) {
+        case "Jour" -> "SELECT COUNT(*) FROM commandes WHERE DATE(date) = CURDATE()";
+        case "Semaine" -> "SELECT COUNT(*) FROM commandes WHERE date >= NOW() - INTERVAL 7 DAY";
+        case "Mois" -> "SELECT COUNT(*) FROM commandes WHERE date >= NOW() - INTERVAL 1 MONTH";
+        default -> "SELECT COUNT(*) FROM commandes";
+    };
+    try (Connection conn = connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        return rs.next() ? rs.getInt(1) : 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return 0;
+    }
+}
+
+// === CORRECTION ERREUR : getLogs() ===
+public static List<LogEntry> getLogs() {
+    List<LogEntry> logs = new ArrayList<>();
+    String sql = "SELECT id, username, action, details, date_action FROM log_activity ORDER BY id DESC LIMIT 100";
+    try (Connection conn = connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+            logs.add(new LogEntry(
+                rs.getInt("id"),
+                rs.getString("username"),
+                rs.getString("action"),
+                rs.getString("details"),
+                rs.getString("date_action")
+            ));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return logs;
+}
 
     // ================= STATISTIQUES =================
 
