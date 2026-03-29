@@ -245,6 +245,73 @@ public class DatabaseHandler {
             throw new RuntimeException(e);
         }
     }
+    // ================= CLASSES DE DONNÉES (MODÈLES) =================
+
+    public static class MenuItem {
+        private final int id;
+        private final String nom;
+        private final double prix;
+        private final String categorie;
+        private final String imagePath;
+
+        public MenuItem(int id, String nom, double prix, String categorie, String imagePath) {
+            this.id = id;
+            this.nom = nom;
+            this.prix = prix;
+            this.categorie = categorie;
+            this.imagePath = imagePath;
+        }
+
+        public int getId() { return id; }
+        public String getNom() { return nom; }
+        public double getPrix() { return prix; }
+        public String getCategorie() { return categorie; }
+        public String getImagePath() { return imagePath; }
+    }
+
+    public static class LogEntry {
+        private final int id;
+        private final String username;
+        private final String action;
+        private final String details;
+        private final String dateAction;
+
+        public LogEntry(int id, String username, String action, String details, String dateAction) {
+            this.id = id;
+            this.username = username;
+            this.action = action;
+            this.details = details;
+            this.dateAction = dateAction;
+        }
+
+        public int getId() { return id; }
+        public String getUsername() { return username; }
+        public String getAction() { return action; }
+        public String getDetails() { return details; }
+        public String getDateAction() { return dateAction; }
+    }
+
+    public static class CommandeData {
+        private final int id;
+        private final String dateHeure;
+        private final String numTable;
+        private final String details;
+        private final double montantTotal;
+
+        public CommandeData(int id, String dateHeure, String numTable, String details, double montantTotal) {
+            this.id = id;
+            this.dateHeure = dateHeure;
+            this.numTable = numTable;
+            this.details = details;
+            this.montantTotal = montantTotal;
+        }
+
+        public int getId() { return id; }
+        public String getDateHeure() { return dateHeure; }
+        public String getNumTable() { return numTable; }
+        public String getDetails() { return details; }
+        public double getMontantTotal() { return montantTotal; }
+    }
 
     // ================= GESTION DES PRODUITS =================
 
