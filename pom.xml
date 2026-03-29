@@ -46,11 +46,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/BorneCommande.java</exclude>
-                        <exclude>**/LoginInterface.java</exclude>
-                        <exclude>**/AdminPanel.java</exclude>
-                    </excludes>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
